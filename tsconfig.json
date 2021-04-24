@@ -1,20 +1,37 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "allowJs": true,
-    "module": "commonjs",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "pretty": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
+    "noImplicitThis": true,
     "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "importHelpers": true,
+    "target": "es2017",
+    "module": "es2020",
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom", "esnext"],
+    "allowJs": true,
+    "jsx": "react"
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }
