@@ -1,24 +1,26 @@
+import { Button } from '@material-ui/core';
+import { SnackbarKey, SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Landing } from './components/landing/landing';
 
-function App() {
+const App = () => {
+  const notistackRef = React.createRef<SnackbarProvider>();
+  const onClickDismiss = (key: SnackbarKey) => () => notistackRef.current?.closeSnackbar(key);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Standalone application with Electron, React, and SQLite stack.</h1>
-      </header>
-      <article>
-        <p>
-          Say <i>ping</i> to the main process.
-        </p>
-
-        <br />
-        <p>Main process responses:</p>
-        <br />
-      </article>
-    </div>
+    <SnackbarProvider
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      ref={notistackRef}
+      action={(key) => <Button onClick={onClickDismiss(key)}>Dismiss</Button>}
+    >
+      <Landing />
+    </SnackbarProvider>
   );
-}
+};
 
 function render() {
   ReactDOM.render(<App />, document.getElementById('root'));
