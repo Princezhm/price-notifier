@@ -1,3 +1,5 @@
+const copyWebpackPlugin = require('copy-webpack-plugin');
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 module.exports = {
   /**
    * This is the main entry point for your application, it's the first file
@@ -8,6 +10,30 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
   },
+  plugins: [
+    new FilterWarningsPlugin({
+      exclude: [
+        /.\//,
+        /@sap\/hana-client/,
+        /hdb-pool/,
+        /mongodb/,
+        /mssql/,
+        /mysql/,
+        /mysql2/,
+        /oracledb/,
+        /pg/,
+        /pg-native/,
+        /pg-query-stream/,
+        /react-native-sqlite-storage/,
+        /redis/,
+        /sql.js/,
+        /typeorm-aurora-data-api-driver/,
+      ],
+    }),
+    new copyWebpackPlugin({
+      patterns: [{ from: 'electron/assets', to: 'assets' }],
+    }),
+  ],
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },

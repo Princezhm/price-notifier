@@ -7,7 +7,7 @@ export const dbConfiguration: ConnectionOptions = {
   type: 'better-sqlite3',
   database: './public/db.sqlite3',
   synchronize: true,
-  logging: true,
+  logging: false,
   logger: 'simple-console',
   entities: [Provider, Historic, Timer],
 };

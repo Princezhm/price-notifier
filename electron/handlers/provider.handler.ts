@@ -19,7 +19,6 @@ ipcMain.on('set-provider', async (event: any, provider: Provider) => {
 
 ipcMain.on('set-status', async (event: any, { id, status }) => {
   try {
-    console.log({ id, status });
     const res = await getConnection().createQueryBuilder().update(Provider).set({ status }).where('id = :id', { id }).execute();
     event.returnValue = res;
   } catch (err) {
@@ -41,6 +40,20 @@ ipcMain.on('get-providers', async (event: any, ...args: any[]) => {
       type: 'ipc',
       msg: 'Error getting the providers of prices',
       trace: err,
+    };
+
+    event.returnValue = error;
+  }
+});
+
+ipcMain.on('delete-provider', async (event: any, id: number) => {
+  try {
+    event.return = await getConnection().createQueryBuilder().delete().from(Provider).where('id = :id', { id }).execute();
+  } catch (e) {
+    const error: ErrorMsg = {
+      type: 'ipc',
+      msg: 'Error deleting the provider',
+      trace: e,
     };
 
     event.returnValue = error;

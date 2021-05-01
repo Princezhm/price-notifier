@@ -1,4 +1,5 @@
 import { ipcMain } from 'electron';
+import { TimersSing } from '../timers/Timers';
 import { create } from 'lodash';
 import { getConnection } from 'typeorm';
 import { Timer } from '../../src/model/timer/timer.schema';
@@ -7,7 +8,9 @@ import { ErrorMsg } from '../../src/typings/error.type';
 ipcMain.on('set-timer', async (event: any, timer: Timer) => {
   try {
     const created = await Timer.create(timer);
-    event.returnValue = await created.save();
+    const saved = await created.save();
+    TimersSing.changeTimer(timer.notification_rate);
+    event.returnValue = saved;
   } catch (err) {
     const error: ErrorMsg = {
       type: 'ipc',

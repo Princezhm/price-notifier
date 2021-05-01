@@ -233,9 +233,14 @@ export const ProviderSelector = ({ provider, getProviders }: ProviderSelectorPro
 
   const deleteProvider = async () => {
     setSavingPreferences(true);
-    setTimeout(() => {
-      setSavingPreferences(false);
-    }, 1000);
+    const result: any | ErrorMsg = ipcRenderer.sendSync('delete-provider', provider.id);
+    if (isErrorMsg(result)) {
+      enqueueSnackbar(`the provider ${provider.name} was sucessfully deleted`, { variant: 'success' });
+      getProviders();
+    } else {
+      enqueueSnackbar(`the provider ${provider.name} was not deleted`, { variant: 'error' });
+    }
+    setSavingPreferences(false);
   };
 
   return (

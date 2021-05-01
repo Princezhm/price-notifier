@@ -4,7 +4,11 @@ import { ErrorMsg } from '../../src/typings/error.type';
 
 ipcMain.on('get-historic', async (event: any, ...args: any[]) => {
   try {
-    event.returnValue = await Historic.find();
+    event.returnValue = await Historic.find({
+      order: {
+        id: 'DESC',
+      },
+    });
   } catch (err) {
     const error: ErrorMsg = {
       type: 'ipc',

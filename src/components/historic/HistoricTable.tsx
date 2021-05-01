@@ -22,6 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       paddingTop: theme.spacing(1),
     },
+    tableWrapper: {
+      maxHeight: 700,
+      overflow: 'scroll',
+    },
   })
 );
 const dateFormatter = new Intl.DateTimeFormat('default', {
@@ -59,13 +63,14 @@ export const HistoricTable = ({ data = [] }: HistoricTableProps) => {
 
       <Grid container direction="row" justify="center" alignItems="center">
         <Grid item xs={false} sm={1} md={2} lg={2} />
-        <Grid container item sm={8} md={8} lg={8} direction="row" justify="center">
+        <Grid className={classes.tableWrapper} container item sm={8} md={8} lg={8} direction="row" justify="center">
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell>Provider</TableCell>
                   <TableCell>Date</TableCell>
+                  <TableCell>Notified</TableCell>
                   <TableCell align="right">Price</TableCell>
                   <TableCell align="right">Error</TableCell>
                 </TableRow>
@@ -77,8 +82,9 @@ export const HistoricTable = ({ data = [] }: HistoricTableProps) => {
                       {historic.provider}
                     </TableCell>
                     <TableCell>{formatDate(historic.date)}</TableCell>
+                    <TableCell>{historic.notified}</TableCell>
                     <TableCell align="right">${historic.price}</TableCell>
-                    <TableCell align="right">${historic.error}</TableCell>
+                    <TableCell align="right">{historic.error}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

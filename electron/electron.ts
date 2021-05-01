@@ -1,8 +1,29 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu, NativeImage, nativeImage, Tray } from 'electron';
 import { createConnection } from 'typeorm';
+import path from 'path';
 import { dbConfiguration } from './database';
+import { TrayMenu } from './menu/menu';
 import './handlers';
+import os from 'os';
+import { TimersSing } from './timers/Timers';
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+const platforms = {
+  WINDOWS: 'WINDOWS',
+  MAC: 'MAC',
+  LINUX: 'LINUX',
+};
+
+const platformsNames = {
+  win32: platforms.WINDOWS,
+  darwin: platforms.MAC,
+  linux: platforms.LINUX,
+};
+
+type osType = 'win32' | 'darwin' | 'linux';
+const plat: osType = os.platform() as osType;
+const currentPlatform = platformsNames[plat];
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -10,9 +31,11 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const createWindow = async (): Promise<void> => {
-  await createConnection(dbConfiguration);
+if (currentPlatform === platforms.WINDOWS) {
+  app.setAppUserModelId(process.execPath);
+}
 
+const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 600,
@@ -29,6 +52,7 @@ const createWindow = async (): Promise<void> => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+  return mainWindow;
 };
 app.commandLine.appendSwitch('disable-site-isolation-trials');
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
@@ -36,14 +60,33 @@ app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+let tray;
+app.on('ready', async () => {
+  await createConnection(dbConfiguration);
+  tray = new TrayMenu(app, createWindow);
+
+  await TimersSing.build();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
+  switch (currentPlatform) {
+    case platforms.MAC: {
+      app.dock.hide();
+      break;
+    }
+    case platforms.WINDOWS: {
+      break;
+    }
+    case platforms.LINUX: {
+      break;
+    }
+    default: {
+      app.quit();
+      break;
+    }
   }
 });
 
@@ -54,6 +97,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.

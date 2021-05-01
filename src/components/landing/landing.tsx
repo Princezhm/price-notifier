@@ -18,17 +18,18 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Save, Settings } from '@material-ui/icons';
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { HistoricTable } from '../historic/HistoricTable';
-import { ProviderSelector } from '../provider-selector/ProviderSelector';
+import { TimerControllerSing } from '../../../electron/timers/TimerController';
 import { Historic } from '../../model/historic/historic.schema';
 import { Provider } from '../../model/provider/provider.schema';
 import { Timer } from '../../model/timer/timer.schema';
 import { ErrorMsg } from '../../typings/error.type';
 import { isErrorMsg, traverse } from '../../utils/utils';
+import { HistoricTable } from '../historic/HistoricTable';
 import { Preferences, PreferencesProps } from '../preferences/Preferences';
+import { ProviderSelector } from '../provider-selector/ProviderSelector';
+import { v4 as uuid } from 'uuid';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -68,6 +69,8 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Landing = () => {
   const classes = useStyles();
   const buttonClassesObj = buttonClasses();
+  let currentTime = 0;
+  let currentId = '';
   // component did mount
   useEffect(() => {
     // backend wait time to fetch data
@@ -102,7 +105,23 @@ export const Landing = () => {
     } else {
       enqueueSnackbar(`You are receiving notification every: ${timer.notification_rate / 1000} seconds`, { variant: 'success' });
       setNotificationRate(timer.notification_rate);
+      currentTime = timer.notification_rate + 1500;
+      createTimeout();
     }
+  };
+
+  const createTimeout = () => {
+    if (currentTime > 1500) {
+      currentId = uuid();
+      TimerControllerSing.interval(() => getHistoric(), currentTime, currentId);
+    }
+  };
+
+  const changeTimer = () => {
+    if (currentId) {
+      TimerControllerSing.clear(currentId);
+    }
+    createTimeout();
   };
 
   const getHistoric = () => {
@@ -133,6 +152,8 @@ export const Landing = () => {
       enqueueSnackbar(responseTimer.msg, { variant: 'error' });
     } else {
       setNotificationRate(responseTimer.notification_rate);
+      currentTime = responseTimer.notification_rate + 1500;
+      changeTimer();
       enqueueSnackbar(`Time updated succesfully to ${responseTimer.notification_rate}`, { variant: 'success' });
     }
     setSavingNotificationRate(false);

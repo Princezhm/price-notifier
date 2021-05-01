@@ -1,1 +1,1 @@
-dai-notifier
+Prices-notifier

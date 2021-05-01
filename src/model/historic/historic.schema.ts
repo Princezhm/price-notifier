@@ -9,6 +9,9 @@ export class Historic extends BaseEntity {
   date!: Date;
 
   @Column()
+  notified!: boolean;
+
+  @Column()
   provider!: string;
 
   @Column()
