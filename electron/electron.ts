@@ -38,8 +38,10 @@ if (currentPlatform === platforms.WINDOWS) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 600,
+    height: 800,
     width: 800,
+    minHeight: 800,
+    minWidth: 800,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -47,6 +49,7 @@ const createWindow = () => {
       devTools: false,
     },
   });
+  mainWindow.maximize();
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);

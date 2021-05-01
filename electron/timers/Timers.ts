@@ -35,11 +35,11 @@ export class Timers {
   }
 
   triggerNotification(title: string, body: string) {
-    // const notification = {
-    //   title,
-    //   body,
-    // };
-    // new Notification(notification).show();
+    const notification = {
+      title,
+      body,
+    };
+    new Notification(notification).show();
   }
 
   async getEnabledProviders() {
