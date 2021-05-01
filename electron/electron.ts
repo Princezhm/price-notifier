@@ -44,6 +44,7 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: false,
       webSecurity: false,
+      devTools: false,
     },
   });
 
@@ -51,7 +52,7 @@ const createWindow = () => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
   return mainWindow;
 };
 app.commandLine.appendSwitch('disable-site-isolation-trials');
