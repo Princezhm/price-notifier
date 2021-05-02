@@ -49,15 +49,16 @@ export class Timers {
 
   async saveHistoric(value: number, stopper: string | null, provider: Provider) {
     const newHistoric = new Historic();
-    newHistoric.notified = provider.status;
     newHistoric.date = new Date();
     newHistoric.provider = provider.name;
-    if (stopper == null) {
+    if (stopper === null) {
       newHistoric.price = value;
       newHistoric.error = '';
+      newHistoric.notified = false;
     } else {
       newHistoric.error = stopper;
       newHistoric.price = 0;
+      newHistoric.notified = provider.status && provider.value_to_notify < value;
     }
     await Historic.create(newHistoric).save();
   }
@@ -73,7 +74,9 @@ export class Timers {
         if (stopper) {
           this.triggerNotification(provider.name, `${provider.name} warning, path not working error on: ${stopper}`);
         } else {
-          this.triggerNotification(provider.name, `current price is: ${value}`);
+          if (value > provider.value_to_notify) {
+            this.triggerNotification(provider.name, `current price is: ${value}`);
+          }
         }
       }
       await this.saveHistoric(value, stopper, provider);
