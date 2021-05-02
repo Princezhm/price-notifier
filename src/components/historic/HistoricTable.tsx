@@ -82,7 +82,7 @@ export const HistoricTable = ({ data = [] }: HistoricTableProps) => {
                       {historic.provider}
                     </TableCell>
                     <TableCell>{formatDate(historic.date)}</TableCell>
-                    <TableCell>{historic.notified}</TableCell>
+                    <TableCell>{historic.notified ? 'Yes' : 'No '}</TableCell>
                     <TableCell align="right">${historic.price}</TableCell>
                     <TableCell align="right">{historic.error}</TableCell>
                   </TableRow>
