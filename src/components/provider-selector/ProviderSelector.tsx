@@ -87,57 +87,34 @@ export const ProviderSelector = ({ provider, getProviders }: ProviderSelectorPro
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    setSettingPrice(true);
-    const newMarks = [
-      {
-        value: provider.slider_min,
-        label: `$${provider.slider_min}`,
-      },
-      {
-        value: provider.slider_max,
-        label: `$${provider.slider_max}`,
-      },
-    ];
-
-    // doStuff to get the current price mark
-
-    const half = (provider.slider_max + provider.slider_min) / 2;
-    newMarks.push({
-      value: half,
-      label: `$${half}`,
-    });
-    setMarks(newMarks);
-    setSettingPrice(false);
     toggleOpen(provider.open);
   }, []);
 
   useEffect(() => {
-    setSettingPrice(true);
-    const newMarks = [
-      {
-        value: provider.slider_min,
-        label: `$${provider.slider_min}`,
-      },
-      {
-        value: provider.slider_max,
-        label: `$${provider.slider_max}`,
-      },
-    ];
-
-    // doStuff to get the current price mark
-
-    const half = (provider.slider_max + provider.slider_min) / 2;
-    newMarks.push({
-      value: half,
-      label: `$${half}`,
-    });
-    setMarks(newMarks);
-    setSettingPrice(false);
+    getMarks();
     toggleOpen(provider.open);
   }, [provider.slider_min, provider.slider_max, provider.step, provider.value_to_notify]);
 
   const getLabelText = () => {
     return `${label} (set in: $${provider.value_to_notify})`;
+  };
+
+  const getMarks = () => {
+    setSettingPrice(true);
+    const newMarks = [
+      {
+        value: provider.slider_min,
+        label: `$${provider.slider_min}`,
+      },
+      {
+        value: provider.slider_max,
+        label: `$${provider.slider_max}`,
+      },
+    ];
+
+    setMarks(newMarks);
+
+    setSettingPrice(false);
   };
 
   // debounce functions
